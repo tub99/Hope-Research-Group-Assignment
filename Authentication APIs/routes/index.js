@@ -3,7 +3,7 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Event Manager  backend' });
+  res.render('index', { title: 'Node Authentication  backend' });
 });
 
 module.exports = router;

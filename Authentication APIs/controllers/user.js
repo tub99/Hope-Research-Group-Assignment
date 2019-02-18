@@ -116,7 +116,9 @@ class User {
         req.assert('password', 'Password is required');
         req.getValidationResult().then(result => {
             if (result.isEmpty()) {
-                UserModel.findById(req.query.email, (err, user) => {
+                UserModel.findOne({
+                    email: req.query.email
+                }, (err, user) => {
                     if (err) {
                         return Callbacks.InternalServerError(err, res);
                     }
