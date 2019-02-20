@@ -15,3 +15,5 @@ POST: http://localhost:444/api/v1/account/create
 POST: http://localhost:444/api/v1/account/login
 
 PUT: http://localhost:444/api/v1/account/reset/?email=som1234@gmail.com
+
+PUT: http://localhost:444/api/v1/account/forgot/?email=som1234@gmail.com

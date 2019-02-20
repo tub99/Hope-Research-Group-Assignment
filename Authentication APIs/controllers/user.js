@@ -6,6 +6,8 @@ const Callbacks = require('../common/callbacks');
 const Utils = require('../common/utils');
 const Constants = require('../config/constants');
 const ObjectID = require('mongodb').ObjectID;
+const uuidv1 = require('uuid/v1');
+
 
 class User {
     constructor() {
@@ -108,11 +110,14 @@ class User {
     }
 
     /**
-      * POST api/v1/account/resetPassword
+      * PUT api/v1/account/resetPassword
       * Update current password.
       */
     resetPassword(req, res, next) {
         // Validate incoming req data
+        const email = req.query.email;
+        if (!email) return Callbacks.ValidationError('User Email Required', res);
+
         req.assert('password', 'Password is required');
         req.getValidationResult().then(result => {
             if (result.isEmpty()) {
@@ -130,6 +135,45 @@ class User {
                             return Callbacks.InternalServerError(err, res);
                         }
                         return Callbacks.Success('Password Reset Successful', res);
+                    });
+                });
+            } else {
+                //Validation error
+                const errors = result.array();
+                return Callbacks.ValidationError(errors[0].msg, res);
+            }
+        }).catch(err => {
+            return Callbacks.InternalServerError(err, res);
+        });
+    }
+
+    /**
+  * POST api/v1/account/resetPassword
+  * Update current password.
+  */
+    forgotPassword(req, res, next) {
+
+        const email = req.query.email;
+        if (!email) return Callbacks.ValidationError('User Email Required', res);
+
+        req.getValidationResult().then(result => {
+            if (result.isEmpty()) {
+                UserModel.findOne({
+                    email: req.query.email
+                }, (err, user) => {
+                    if (err) {
+                        return Callbacks.InternalServerError(err, res);
+                    }
+                    // store updated password in encrypted form
+                    const updatedPassword = `forgot_${uuidv1()}`;
+                    user.password = updatedPassword;
+                    user.isPassWordReset = true;
+                    user.save((err) => {
+                        if (err) {
+                            return Callbacks.InternalServerError(err, res);
+                        }
+                        const response = { 'newPassword': updatedPassword }
+                        return Callbacks.SuccessWithData('Forgotten  password has been reset and sent', response, res);
                     });
                 });
             } else {
