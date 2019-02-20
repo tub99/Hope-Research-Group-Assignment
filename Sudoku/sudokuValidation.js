@@ -1,9 +1,11 @@
 
+// validation logic: all elements are unique
 const _validate = (arr) => {
     const sum = arr.reduce((a, b) => a + b);
     // n(n+1)2 n=9
     if (sum === (9 * 10) / 2) return true;
-    else return false;
+    else
+        return false;
 }
 
 const _isRowValidated = (mat) => {
@@ -19,6 +21,7 @@ const transposeMatrix = (array) => {
 }
 
 const _isColumnsValidated = (mat) => {
+    // transposing matrix to retrieve columns
     const transposedMatrix = transposeMatrix(mat);
     for (let column of transposedMatrix) {
         if (!_validate(column)) return false;
@@ -27,16 +30,18 @@ const _isColumnsValidated = (mat) => {
     return true;
 }
 
+// getting elements of a 3*3 grid
 const _getGridMatrix = (i, j, mat) => {
     const gridMatrix = [];
-    for (let p = i; p < i+3; p++) {
-        for (let m = j; m < j+3; m++) {
+    for (let p = i; p < i + 3; p++) {
+        for (let m = j; m < j + 3; m++) {
             gridMatrix.push(mat[p][m]);
         }
     }
     return gridMatrix;
 }
 
+// checking 3*3 grid
 const _isGridValidated = (mat) => {
     const gridMatrices = [];
     for (let i = 0; i < mat.length; i = i + 3) {
@@ -54,7 +59,7 @@ const _isGridValidated = (mat) => {
 
 
 function validateSudoku(soduMatrix) {
-
+    // if all 3 conditions pass it is a valid sudoku matrix
     if (_isRowValidated(soduMatrix) &&
         _isColumnsValidated(soduMatrix) && _isGridValidated(soduMatrix)) {
         return true;
